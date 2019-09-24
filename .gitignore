@@ -43,3 +43,28 @@ __pycache__/
 *$py.class
 
 .ipynb_checkpoints/
+||||||| merged common ancestors
+=======
+notebooks/belgium_railway.ipynb
+# Mac
+.DS_Store
+
+# -*- mode: gitignore; -*-
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+data/
+datasets/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+.ipynb_checkpoints/
