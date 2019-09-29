@@ -1,9 +1,11 @@
-import numpy as np
-import matplotlib.pyplot as mplt
-import matplotlib
+import os
 #from tqdm import tqdm
 from glob import glob
-import os
+
+import matplotlib
+import matplotlib.pyplot as mplt
+import numpy as np
+
 
 # Very simplified tqdm
 class tqdm:

@@ -1,6 +1,7 @@
 import os
-from tools import *
+
 from sift import *
+from tools import *
 
 dir_sc = os.path.join('data', 'Scene')
 dir_sift = os.path.join('data', 'sift')
