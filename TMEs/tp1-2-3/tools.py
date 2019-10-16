@@ -4,6 +4,7 @@ from glob import glob
 
 import matplotlib
 import matplotlib.pyplot as mplt
+import matplotlib.pyplot as plt
 import numpy as np
 
 
