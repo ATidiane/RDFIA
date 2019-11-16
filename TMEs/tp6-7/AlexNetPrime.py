@@ -219,9 +219,9 @@ def main(params):
         plot.update(loss.avg, loss_test.avg, top1_acc.avg, top1_acc_test.avg)
 
     pd_acc_loss_avg.to_csv(
-        'results/loss_acc_avg_0.05.csv',
+        'results/loss_acc_0.05_512.csv',
         index=False)
-    pd_train_loss.to_csv('results/train_loss_0.05.csv', index=False)
+    pd_train_loss.to_csv('results/train_loss_0.05_512.csv', index=False)
 
 
 if __name__ == '__main__':

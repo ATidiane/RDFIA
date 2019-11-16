@@ -12,6 +12,7 @@ import torch.optim
 import torch.utils.data
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
+import pandas as pd
 
 from tme6 import *
 
@@ -32,12 +33,15 @@ class AlexNetPrime(nn.Module):
 
         self.features = nn.Sequential(
             nn.Conv2d(3, 32, 5, stride=1, padding=2),
+            nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d(2, stride=2, padding=0),
             nn.Conv2d(32, 64, 5, stride=1, padding=2),
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(2, stride=2, padding=0),
             nn.Conv2d(64, 64, 5, stride=1, padding=2),
+            nn.BatchNorm2d(64),            
             nn.ReLU(),
             nn.MaxPool2d(2, stride=2, padding=0, ceil_mode=True)
         )
@@ -45,6 +49,7 @@ class AlexNetPrime(nn.Module):
         self.classifier = nn.Sequential(
             nn.Linear(64 * 4 * 4, 1000),
             nn.ReLU(),
+            nn.Dropout(p=0.1),
             nn.Linear(1000, 10)
         )
 
@@ -84,13 +89,13 @@ def get_dataset_cifar10(batch_size, path):
         batch_size=batch_size,
         shuffle=True,
         pin_memory=CUDA,
-        num_workers=2)
+        num_workers=4)
     val_loader = torch.utils.data.DataLoader(
         val_dataset,
         batch_size=batch_size,
         shuffle=False,
         pin_memory=CUDA,
-        num_workers=2)
+        num_workers=4)
 
     return train_loader, val_loader
 
@@ -119,8 +124,8 @@ def epoch(data, model, criterion, optimizer=None):
     tic = time.time()
     for i, (input, target) in enumerate(data):
         if CUDA:  # si on fait du GPU, passage en CUDA
-            input = input.cuda(non_blocking=CUDA)
-            target = target.cuda(non_blocking=CUDA)
+            input = input.cuda()
+            target = target.cuda()
 
         # forward
         output = model(input)
@@ -183,7 +188,9 @@ def main(params):
     # define model, loss, optim
     model = AlexNetPrime()
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adadelta(model.parameters(), params.lr)
+    optimizer = torch.optim.SGD(model.parameters(), params.lr, momentum=0.9)
+
+    lr_sched = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.95)
 
     if CUDA:  # si on fait du GPU, passage en CUDA
         model = model.cuda()
@@ -217,6 +224,9 @@ def main(params):
             train, model, criterion, optimizer)
         # Phase d'evaluation
         top1_acc_test, top5_acc_test, loss_test = epoch(test, model, criterion)
+
+        lr_sched.step()
+
         # Save results
         pd_acc_loss_avg = pd_acc_loss_avg.append(dict(zip(
             cols_acc_loss_avg, [loss.avg, loss_test.avg, top1_acc.avg, top1_acc_test.avg])), ignore_index=True)
@@ -225,10 +235,10 @@ def main(params):
         plot.update(loss.avg, loss_test.avg, top1_acc.avg, top1_acc_test.avg)
 
     pd_acc_loss_avg.to_csv(
-        'results/adadelta_loss_acc_avg.csv',
+        'results/batch_norm_loss_acc_0.05.csv',
         index=False)
     pd_train_loss.to_csv(
-        'results/adadelta_train_loss.csv',
+        'results/batch_norm_train_loss_0.05.csv',
         index=False)
 
 

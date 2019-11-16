@@ -84,13 +84,13 @@ def get_dataset_cifar10(batch_size, path):
         batch_size=batch_size,
         shuffle=True,
         pin_memory=CUDA,
-        num_workers=0)
+        num_workers=4)
     val_loader = torch.utils.data.DataLoader(
         val_dataset,
         batch_size=batch_size,
         shuffle=False,
         pin_memory=CUDA,
-        num_workers=0)
+        num_workers=4)
 
     return train_loader, val_loader
 
