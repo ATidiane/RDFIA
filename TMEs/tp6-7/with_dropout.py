@@ -12,6 +12,7 @@ import torch.optim
 import torch.utils.data
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
+import pandas as pd
 
 from tme6 import *
 
@@ -45,6 +46,7 @@ class AlexNetPrime(nn.Module):
         self.classifier = nn.Sequential(
             nn.Linear(64 * 4 * 4, 1000),
             nn.ReLU(),
+            nn.Dropout(p=0.1),
             nn.Linear(1000, 10)
         )
 
@@ -84,13 +86,13 @@ def get_dataset_cifar10(batch_size, path):
         batch_size=batch_size,
         shuffle=True,
         pin_memory=CUDA,
-        num_workers=0)
+        num_workers=4)
     val_loader = torch.utils.data.DataLoader(
         val_dataset,
         batch_size=batch_size,
         shuffle=False,
         pin_memory=CUDA,
-        num_workers=0)
+        num_workers=4)
 
     return train_loader, val_loader
 
@@ -230,10 +232,10 @@ def main(params):
         plot.update(loss.avg, loss_test.avg, top1_acc.avg, top1_acc_test.avg)
 
     pd_acc_loss_avg.to_csv(
-        'results/momentum_scheduler_loss_acc_avg_0.05.csv',
+        'results/momentum_explr_dropout_loss_acc_0.05.csv',
         index=False)
     pd_train_loss.to_csv(
-        'results/momentum_scheduler_train_loss_0.05.csv',
+        'results/momentum_explr_dropout_train_loss_0.05.csv',
         index=False)
 
 

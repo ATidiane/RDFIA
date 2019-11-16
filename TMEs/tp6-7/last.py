@@ -39,7 +39,7 @@ class AlexNetPrime(nn.Module):
             nn.MaxPool2d(2, stride=2, padding=0),
             nn.Conv2d(64, 64, 5, stride=1, padding=2),
             nn.ReLU(),
-            nn.MaxPool2d(2, stride=2, padding=0, ceil_mode=True)
+            nn.MaxPool2d(2, stride=2, padding=0)
         )
 
         self.classifier = nn.Sequential(
@@ -62,21 +62,14 @@ def get_dataset_cifar10(batch_size, path):
     Cette fonction charge le dataset et effectue des transformations sur chaqu
     image (listées dans `transform=...`).
     """
-    train_dataset = datasets.CIFAR10(
-        path, train=True, download=True, transform=transforms.Compose(
-            [transforms.RandomHorizontalFlip(),
-             transforms.RandomCrop(size=32),
-             transforms.ToTensor(),
-             transforms.Normalize(mean=[0.491, 0.482, 0.447],
-                                  std=[0.202, 0.199, 0.201])]))
+    train_dataset = datasets.CIFAR10(path, train=True, download=True,
+                                     transform=transforms.Compose([
+                                         transforms.ToTensor()
+                                     ]))
 
     val_dataset = datasets.CIFAR10(path, train=False, download=True,
                                    transform=transforms.Compose([
-                                       transforms.CenterCrop(size=28),
-                                       transforms.ToTensor(),
-                                       transforms.Normalize(
-                                           mean=[0.491, 0.482, 0.447],
-                                           std=[0.202, 0.199, 0.201])
+                                       transforms.ToTensor()
                                    ]))
 
     train_loader = torch.utils.data.DataLoader(
@@ -118,9 +111,10 @@ def epoch(data, model, criterion, optimizer=None):
     # on itere sur les batchs du dataset
     tic = time.time()
     for i, (input, target) in enumerate(data):
+
         if CUDA:  # si on fait du GPU, passage en CUDA
-            input = input.cuda(non_blocking=CUDA)
-            target = target.cuda(non_blocking=CUDA)
+            input = input.cuda()
+            target = target.cuda()
 
         # forward
         output = model(input)
@@ -183,7 +177,7 @@ def main(params):
     # define model, loss, optim
     model = AlexNetPrime()
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adadelta(model.parameters(), params.lr)
+    optimizer = torch.optim.SGD(model.parameters(), params.lr)
 
     if CUDA:  # si on fait du GPU, passage en CUDA
         model = model.cuda()
@@ -225,11 +219,9 @@ def main(params):
         plot.update(loss.avg, loss_test.avg, top1_acc.avg, top1_acc_test.avg)
 
     pd_acc_loss_avg.to_csv(
-        'results/adadelta_loss_acc_avg.csv',
+        'results/loss_acc_0.01_512.csv',
         index=False)
-    pd_train_loss.to_csv(
-        'results/adadelta_train_loss.csv',
-        index=False)
+    pd_train_loss.to_csv('results/train_loss_0.01_512.csv', index=False)
 
 
 if __name__ == '__main__':
