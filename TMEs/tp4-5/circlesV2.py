@@ -127,10 +127,6 @@ if __name__ == '__main__':
         L_test, acc_test = loss_accuracy(Yhat_test, data.Ytest)
 
         data.plot_loss(L, L_test, acc, acc_test)
-        # writer.add_scalar('Loss/train', L, i)
-        # writer.add_scalar('Accuracy/train', acc, i)
-        # writer.add_scalar('Loss/test', L_test, i)
-        # writer.add_scalar('Accuracy/test', acc_test, i)
 
     Ygrid, outs_grid = forward(params, data.Xgrid)
     data.plot_data_with_grid(Ygrid.detach())
