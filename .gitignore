@@ -13,6 +13,7 @@ tramp
 
 data/
 datasets/
+15SceneData/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
