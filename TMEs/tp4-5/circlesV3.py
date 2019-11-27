@@ -54,7 +54,7 @@ if __name__ == '__main__':
     np.random.shuffle(inds)
     Xtrain = data.Xtrain[inds]
     Ytrain = data.Ytrain[inds]
-    Nbatch = 15
+    Nbatch = 20
     nx = data.Xtrain.shape[1]
     nh = 10
     ny = data.Ytrain.shape[1]

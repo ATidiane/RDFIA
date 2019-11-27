@@ -94,7 +94,7 @@ def main_mnist():
     Ytrain = data.Ytrain[inds]
     Xtest = data.Xtest
     Ytest = data.Ytest
-    Nbatch = 5000
+    Nbatch = 4096
     nx = data.Xtrain.shape[1]
     nh = 10
     ny = data.Ytrain.shape[1]
