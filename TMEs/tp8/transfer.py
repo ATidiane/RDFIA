@@ -12,8 +12,9 @@ import torch.utils.data
 import torchvision
 import torchvision.models as models
 from PIL import Image
-from sklearn.svm import LinearSVC
 from torch.nn import functional as F
+
+from sklearn.svm import LinearSVC
 
 torchvision.models.vgg.model_urls["vgg16"] = "http://webia.lip6.fr/~robert/cours/rdfia/vgg16-397923af.pth"
 os.environ["TORCH_HOME"] = "/tmp/torch"
